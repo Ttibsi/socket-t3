@@ -10,21 +10,25 @@
 #include <unistd.h>
 
 #include "Message.hpp"
+#include "board.hpp"
 
 void sent_to_client(int sockfd, std::string_view data) noexcept {
     (void)send(sockfd, data.data(), data.size(), 0);
 }
 
-void start_game(int clientSocket) {
+board_t start_game(int clientSocket) {
     std::vector<std::string> intro = {
         "TIC TAC TOE\n",
-        "This game works by entering two integers as co-ordinates for the "
-        "place on the board to fill",
+        "This game works by entering two integers as co-ordinates for the\n"
+        "place on the board to fill\n\n",
     };
 
     for (std::string elem : intro) {
         sent_to_client(clientSocket, elem);
     }
+
+    board_t board = construct_board();
+    return board;
 }
 
 int server_main() {
@@ -60,9 +64,6 @@ int server_main() {
 
     int clientSocket = accept(listening, (sockaddr *)&client, &clientSize);
 
-    // TODO: Get this to print properly
-    start_game(clientSocket);
-
     if (clientSocket == -1) {
         std::cerr << "Problem with client connection";
         return -4;
@@ -85,10 +86,13 @@ int server_main() {
     // While receiving, display message + echo message
     char buf[4096];
 
+    board_t board = start_game(clientSocket);
+
     // THis is each move
     while (true) {
         // clear buffer
         memset(buf, 0, 4096);
+        sent_to_client(clientSocket, print_board(board));
 
         // wait for message
         int bytesRecv = recv(clientSocket, buf, 4096, 0);
@@ -100,11 +104,10 @@ int server_main() {
             break;
         }
 
-        // display message
-        // resend message
         std::cout << "Received: " << std::string(buf, 0, bytesRecv)
                   << std::endl;
-        sent_to_client(clientSocket, buf);
+        board = place_counter(board, std::string(buf, 0, bytesRecv));
+        sent_to_client(clientSocket, print_board(board));
     }
 
     // Close socket
