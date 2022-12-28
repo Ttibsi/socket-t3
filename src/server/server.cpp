@@ -20,7 +20,8 @@ board_t start_game(int clientSocket) {
     std::vector<std::string> intro = {
         "TIC TAC TOE\n",
         "This game works by entering two integers as co-ordinates for the\n"
-        "place on the board to fill\n\n",
+        "place on the board to fill.\n\n",
+        "Press any key to start\n",
     };
 
     for (std::string elem : intro) {
@@ -87,12 +88,12 @@ int server_main() {
     char buf[4096];
 
     board_t board = start_game(clientSocket);
+    sent_to_client(clientSocket, print_board(board));
 
     // THis is each move
     while (true) {
         // clear buffer
         memset(buf, 0, 4096);
-        sent_to_client(clientSocket, print_board(board));
 
         // wait for message
         int bytesRecv = recv(clientSocket, buf, 4096, 0);

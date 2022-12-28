@@ -37,8 +37,6 @@ int client_main() {
     // Game intro
     int bytesReceived = recv(sock, buf, 4096, 0);
     std::cout << std::string(buf, bytesReceived) << "\n";
-    bytesReceived = recv(sock, buf, 4096, 0);
-    std::cout << std::string(buf, bytesReceived) << "\n";
 
     do {
         // Enter text
