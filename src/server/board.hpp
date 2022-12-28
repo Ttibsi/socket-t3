@@ -43,6 +43,13 @@ inline std::string print_board(board_t b) {
     return ret;
 }
 
+inline bool check_value(std::string in) {
+    std::regex exp(R"((\(?)([0-2]),(\ ?)([0-2])(\)?))");
+    if (regex_match(in, exp))
+        return true;
+    return false;
+}
+
 inline board_t place_counter(board_t b, std::string input) {
     bool correct = check_value(input);
     if (!(correct)) {
