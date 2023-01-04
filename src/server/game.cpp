@@ -112,6 +112,16 @@ State has_game_ended(board_t board) {
     return State::No_state;
 };
 
+void game_end(bool win, int clientSocket) {
+    std::cout << "Game over. Player " << ((win) ? "won" : "lost") << "\n";
+
+    std::string end_tag = "Game over, you have ";
+    end_tag.append((win) ? "won" : "lost");
+    end_tag.append(". Thanks for playing.\n");
+
+    sent_to_client(clientSocket, end_tag);
+}
+
 std::tuple<bool, board_t> play_game(board_t board, int clientSocket,
                                     int bytesRecv, char *buf) {
     auto [b, success] = place_counter(board, std::string(buf, 0, bytesRecv));
@@ -124,10 +134,10 @@ std::tuple<bool, board_t> play_game(board_t board, int clientSocket,
     sent_to_client(clientSocket, print_board(board));
 
     if (has_game_ended(board) == State::Win) {
-        std::cout << "Win\n";
+        game_end(true, clientSocket);
         return std::tuple{true, board};
     } else if (has_game_ended(board) == State::Lose) {
-        std::cout << "Lose\n";
+        game_end(false, clientSocket);
         return std::tuple{true, board};
     }
 
