@@ -52,11 +52,11 @@ inline bool check_value(std::string in) {
 }
 
 inline std::tuple<board_t, bool> place_counter(board_t b, std::string input) {
-    bool correct = check_value(input);
-    if (!(correct)) {
-        std::cout << "Erroneous entry\n";
-        return std::tuple(b, false);
-    }
+    // bool correct = check_value(input);
+    // if (!(correct)) {
+    //     std::cout << "Erroneous entry\n";
+    //     return std::tuple(b, false);
+    // }
 
     std::regex r(R"(([0-2]),(\ )*([0-2]))");
     std::smatch sm;
@@ -80,7 +80,8 @@ inline std::tuple<board_t, bool> place_counter(board_t b, std::string input) {
         return std::tuple(b, true);
     } else {
         std::cout << "Error: Input already taken\n";
-        return std::tuple(b, false);
+        // return std::tuple(b, false);
+        return std::tuple(b, true);
     }
 }
 

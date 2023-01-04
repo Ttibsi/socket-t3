@@ -10,6 +10,7 @@ enum class Token {
 };
 
 inline Token TOKEN = Token::X;
+inline Token OPP_TOKEN = Token::O;
 
 inline std::string token_as_str(Token t) {
     static std::unordered_map<Token, std::string> const table = {
