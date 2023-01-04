@@ -9,6 +9,8 @@ enum class Token {
     O,
 };
 
+inline Token TOKEN = Token::X;
+
 inline std::string token_as_str(Token t) {
     static std::unordered_map<Token, std::string> const table = {
         {Token::O, "O"},
@@ -21,7 +23,5 @@ inline std::string token_as_str(Token t) {
         return "";
     }
 }
-
-inline Token TOKEN = Token::X;
 
 #endif
