@@ -44,7 +44,6 @@ board_t ai_player(board_t b) {
 State has_game_ended(board_t board) {
     // horizontal
     if (board[0].value == board[1].value && board[1].value == board[2].value) {
-        std::cout << "game end 1\n";
         if (board[0].value == token_as_str(TOKEN)) {
             return State::Win;
         } else if (typeid(board[0].value).name() == std::string("Token")) {
@@ -53,7 +52,6 @@ State has_game_ended(board_t board) {
     }
 
     if (board[3].value == board[4].value && board[4].value == board[5].value) {
-        std::cout << "game end 2\n";
         if (board[3].value == token_as_str(TOKEN)) {
             return State::Win;
         } else if (typeid(board[3].value).name() == std::string("Token")) {
@@ -62,7 +60,6 @@ State has_game_ended(board_t board) {
     }
 
     if (board[6].value == board[7].value && board[7].value == board[8].value) {
-        std::cout << "game end 3\n";
         if (board[6].value == token_as_str(TOKEN)) {
             return State::Win;
         } else if (typeid(board[6].value).name() == std::string("Token")) {
@@ -72,7 +69,6 @@ State has_game_ended(board_t board) {
 
     // Vertical
     if (board[0].value == board[3].value && board[3].value == board[6].value) {
-        std::cout << "game end 4\n";
         if (board[0].value == token_as_str(TOKEN)) {
             return State::Win;
         } else if (typeid(board[0].value).name() == std::string("Token")) {
@@ -81,7 +77,6 @@ State has_game_ended(board_t board) {
     }
 
     if (board[1].value == board[4].value && board[4].value == board[7].value) {
-        std::cout << "game end 5\n";
         if (board[1].value == token_as_str(TOKEN)) {
             return State::Win;
         } else if (typeid(board[1].value).name() == std::string("Token")) {
@@ -90,7 +85,23 @@ State has_game_ended(board_t board) {
     }
 
     if (board[2].value == board[5].value && board[5].value == board[8].value) {
-        std::cout << "game end 6\n";
+        if (board[2].value == token_as_str(TOKEN)) {
+            return State::Win;
+        } else if (typeid(board[2].value).name() == std::string("Token")) {
+            return State::Lose;
+        }
+    }
+
+    // Diagonal
+    if (board[0].value == board[4].value && board[4].value == board[8].value) {
+        if (board[0].value == token_as_str(TOKEN)) {
+            return State::Win;
+        } else if (typeid(board[0].value).name() == std::string("Token")) {
+            return State::Lose;
+        }
+    }
+
+    if (board[2].value == board[4].value && board[4].value == board[6].value) {
         if (board[2].value == token_as_str(TOKEN)) {
             return State::Win;
         } else if (typeid(board[2].value).name() == std::string("Token")) {
