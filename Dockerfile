@@ -12,6 +12,7 @@ gdb \
 git \
 g++ \
 libspdlog-dev \
+lsof \
 make \
 neovim \
 systemctl \

@@ -44,62 +44,83 @@ board_t ai_player(board_t b) {
 State has_game_ended(board_t board) {
     // horizontal
     if (board[0].value == board[1].value && board[1].value == board[2].value) {
-        std::cout << "game end 1\n";
         if (board[0].value == token_as_str(TOKEN)) {
             return State::Win;
-        } else if (typeid(board[0].value).name() == std::string("Token")) {
+        } else if (board[0].value == token_as_str(OPP_TOKEN)) {
             return State::Lose;
         }
     }
 
     if (board[3].value == board[4].value && board[4].value == board[5].value) {
-        std::cout << "game end 2\n";
         if (board[3].value == token_as_str(TOKEN)) {
             return State::Win;
-        } else if (typeid(board[3].value).name() == std::string("Token")) {
+        } else if (board[3].value == token_as_str(OPP_TOKEN)) {
             return State::Lose;
         }
     }
 
     if (board[6].value == board[7].value && board[7].value == board[8].value) {
-        std::cout << "game end 3\n";
         if (board[6].value == token_as_str(TOKEN)) {
             return State::Win;
-        } else if (typeid(board[6].value).name() == std::string("Token")) {
+        } else if (board[6].value == token_as_str(OPP_TOKEN)) {
             return State::Lose;
         }
     }
 
     // Vertical
     if (board[0].value == board[3].value && board[3].value == board[6].value) {
-        std::cout << "game end 4\n";
         if (board[0].value == token_as_str(TOKEN)) {
             return State::Win;
-        } else if (typeid(board[0].value).name() == std::string("Token")) {
+        } else if (board[0].value == token_as_str(OPP_TOKEN)) {
             return State::Lose;
         }
     }
 
     if (board[1].value == board[4].value && board[4].value == board[7].value) {
-        std::cout << "game end 5\n";
         if (board[1].value == token_as_str(TOKEN)) {
             return State::Win;
-        } else if (typeid(board[1].value).name() == std::string("Token")) {
+        } else if (board[1].value == token_as_str(OPP_TOKEN)) {
             return State::Lose;
         }
     }
 
     if (board[2].value == board[5].value && board[5].value == board[8].value) {
-        std::cout << "game end 6\n";
         if (board[2].value == token_as_str(TOKEN)) {
             return State::Win;
-        } else if (typeid(board[2].value).name() == std::string("Token")) {
+        } else if (board[2].value == token_as_str(OPP_TOKEN)) {
+            return State::Lose;
+        }
+    }
+
+    // Diagonal
+    if (board[0].value == board[4].value && board[4].value == board[8].value) {
+        if (board[0].value == token_as_str(TOKEN)) {
+            return State::Win;
+        } else if (board[0].value == token_as_str(OPP_TOKEN)) {
+            return State::Lose;
+        }
+    }
+
+    if (board[2].value == board[4].value && board[4].value == board[6].value) {
+        if (board[2].value == token_as_str(TOKEN)) {
+            return State::Win;
+        } else if (board[2].value == token_as_str(OPP_TOKEN)) {
             return State::Lose;
         }
     }
 
     return State::No_state;
 };
+
+void game_end(bool win, int clientSocket) {
+    std::cout << "Game over. Player " << ((win) ? "won" : "lost") << "\n";
+
+    std::string end_tag = "Game over, you have ";
+    end_tag.append((win) ? "won" : "lost");
+    end_tag.append(". Thanks for playing.\n");
+
+    sent_to_client(clientSocket, end_tag);
+}
 
 std::tuple<bool, board_t> play_game(board_t board, int clientSocket,
                                     int bytesRecv, char *buf) {
@@ -113,10 +134,10 @@ std::tuple<bool, board_t> play_game(board_t board, int clientSocket,
     sent_to_client(clientSocket, print_board(board));
 
     if (has_game_ended(board) == State::Win) {
-        std::cout << "Win\n";
+        game_end(true, clientSocket);
         return std::tuple{true, board};
     } else if (has_game_ended(board) == State::Lose) {
-        std::cout << "Lose\n";
+        game_end(false, clientSocket);
         return std::tuple{true, board};
     }
 

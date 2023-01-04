@@ -64,7 +64,6 @@ inline std::tuple<board_t, bool> place_counter(board_t b, std::string input) {
 
     if (std::regex_search(input, sm, r)) {
         for (long unsigned int i = 1; i < sm.size(); i++) {
-            // TODO: Convert to switch statement
             if (i == 2) {
                 continue;
             } else if (i == 1) {
