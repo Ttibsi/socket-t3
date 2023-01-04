@@ -5,6 +5,7 @@
 #include <regex>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -50,11 +51,11 @@ inline bool check_value(std::string in) {
     return false;
 }
 
-inline board_t place_counter(board_t b, std::string input) {
+inline std::tuple<board_t, bool> place_counter(board_t b, std::string input) {
     bool correct = check_value(input);
     if (!(correct)) {
         std::cout << "Erroneous entry\n";
-        return b;
+        return std::tuple(b, false);
     }
 
     std::regex r(R"(([0-2]),(\ )*([0-2]))");
@@ -63,6 +64,7 @@ inline board_t place_counter(board_t b, std::string input) {
 
     if (std::regex_search(input, sm, r)) {
         for (long unsigned int i = 1; i < sm.size(); i++) {
+            // TODO: Convert to switch statement
             if (i == 2) {
                 continue;
             } else if (i == 1) {
@@ -73,9 +75,13 @@ inline board_t place_counter(board_t b, std::string input) {
         }
     }
 
-    b[counter_location].value = token_as_str(TOKEN);
-
-    return b;
+    if (b[counter_location].value == " ") {
+        b[counter_location].value = token_as_str(TOKEN);
+        return std::tuple(b, true);
+    } else {
+        std::cout << "Error: Input already taken\n";
+        return std::tuple(b, false);
+    }
 }
 
 #endif

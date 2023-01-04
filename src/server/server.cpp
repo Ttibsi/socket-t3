@@ -9,27 +9,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "Message.hpp"
-#include "board.hpp"
+#include "game.hpp"
 
 void sent_to_client(int sockfd, std::string_view data) noexcept {
     (void)send(sockfd, data.data(), data.size(), 0);
-}
-
-board_t start_game(int clientSocket) {
-    std::vector<std::string> intro = {
-        "TIC TAC TOE\n",
-        "This game works by entering two integers as co-ordinates for the\n"
-        "place on the board to fill.\n\n",
-        "Press any key to start\n",
-    };
-
-    for (std::string elem : intro) {
-        sent_to_client(clientSocket, elem);
-    }
-
-    board_t board = construct_board();
-    return board;
 }
 
 int server_main() {
@@ -84,12 +67,11 @@ int server_main() {
         std::cout << host << " connected on " << ntohs(client.sin_port) << "\n";
     }
 
-    // While receiving, display message + echo message
+    // While receiving, display message
     char buf[4096];
 
     board_t board = start_game(clientSocket);
     sent_to_client(clientSocket, print_board(board));
-
     // THis is each move
     while (true) {
         // clear buffer
@@ -107,12 +89,18 @@ int server_main() {
 
         std::cout << "Received: " << std::string(buf, 0, bytesRecv)
                   << std::endl;
-        board = place_counter(board, std::string(buf, 0, bytesRecv));
-        sent_to_client(clientSocket, print_board(board));
+        auto [end_game, returned_board] =
+            play_game(board, clientSocket, bytesRecv, buf);
+        if (end_game == true) {
+            break;
+        }
+        board = returned_board;
     }
 
     // Close socket
     close(clientSocket);
+
+    // TODO: Find how to kill client process when server closes - signals?
 
     return 0;
 }
