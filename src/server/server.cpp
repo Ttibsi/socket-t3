@@ -67,7 +67,7 @@ int server_main() {
         std::cout << host << " connected on " << ntohs(client.sin_port) << "\n";
     }
 
-    // While receiving, display message + echo message
+    // While receiving, display message
     char buf[4096];
 
     board_t board = start_game(clientSocket);
@@ -89,14 +89,18 @@ int server_main() {
 
         std::cout << "Received: " << std::string(buf, 0, bytesRecv)
                   << std::endl;
-        bool end_game = play_game(board, clientSocket, bytesRecv, buf);
+        auto [end_game, returned_board] =
+            play_game(board, clientSocket, bytesRecv, buf);
         if (end_game == true) {
             break;
         }
+        board = returned_board;
     }
 
     // Close socket
     close(clientSocket);
+
+    // TODO: Find how to kill client process when server closes - signals?
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #include <random>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <typeinfo>
 
 #include "game.hpp"
@@ -25,12 +26,12 @@ board_t start_game(int clientSocket) {
 }
 
 board_t ai_player(board_t b) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(0, 9);
-    int loc = distr(gen);
+    std::mt19937 mt{std::random_device{}()};
 
     while (true) {
+        std::uniform_int_distribution dice{1, 6};
+        int loc = dice(mt);
+
         if (b[loc].value != " ") {
             continue;
         }
@@ -100,23 +101,24 @@ State has_game_ended(board_t board) {
     return State::No_state;
 };
 
-bool play_game(board_t board, int clientSocket, int bytesRecv, char *buf) {
+std::tuple<bool, board_t> play_game(board_t board, int clientSocket,
+                                    int bytesRecv, char *buf) {
     auto [b, success] = place_counter(board, std::string(buf, 0, bytesRecv));
     if (success) {
         board = ai_player(b);
     } else {
         std::cout << "Not successful\n";
-        sent_to_client(clientSocket, std::string("Invalid location"));
+        sent_to_client(clientSocket, std::string("Invalid location\n"));
     }
     sent_to_client(clientSocket, print_board(board));
 
     if (has_game_ended(board) == State::Win) {
         std::cout << "Win\n";
-        return true;
+        return std::tuple{true, board};
     } else if (has_game_ended(board) == State::Lose) {
         std::cout << "Lose\n";
-        return true;
+        return std::tuple{true, board};
     }
 
-    return false;
+    return std::tuple{false, board};
 };

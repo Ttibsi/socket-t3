@@ -6,6 +6,7 @@
 #include "token.hpp"
 
 board_t start_game(int clientSocket);
-bool play_game(board_t board, int clientSocket, int bytesRecv, char *buf);
+std::tuple<bool, board_t> play_game(board_t board, int clientSocket,
+                                    int bytesRecv, char *buf);
 
 #endif
