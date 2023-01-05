@@ -32,14 +32,33 @@ inline board_t construct_board() {
 
     return b;
 }
+inline std::vector<std::string> format_text(board_t board) {
+    std::vector<std::string> ret;
 
-inline std::string print_board(board_t b) {
-    std::string ret =
-        std::string("=============\n") + "| " + b[0].value + " | " +
-        b[1].value + " | " + b[2].value + " |\n" + "=============\n" + "| " +
-        b[3].value + " | " + b[4].value + " | " + b[5].value + " |\n" +
-        "=============\n" + "| " + b[6].value + " | " + b[7].value + " | " +
-        b[8].value + " |\n" + "=============\n";
+    for (Elem e : board) {
+        std::string val;
+        if (e.value == token_as_str(TOKEN)) {
+            val = "\e[1;34m" + e.value + std::string("\e[0m");
+        } else if (e.value == token_as_str(OPP_TOKEN)) {
+            val = "\e[1;31m" + e.value + std::string("\e[0m");
+        } else {
+            val = " ";
+        }
+
+        ret.push_back(val);
+    }
+
+    return ret;
+}
+
+inline std::string print_board(board_t board) {
+    std::vector<std::string> b = format_text(board);
+
+    std::string ret = std::string("=============\n") + "| " + b[0] + " | " +
+                      b[1] + " | " + b[2] + " |\n" + "=============\n" + "| " +
+                      b[3] + " | " + b[4] + " | " + b[5] + " |\n" +
+                      "=============\n" + "| " + b[6] + " | " + b[7] + " | " +
+                      b[8] + " |\n" + "=============\n";
 
     return ret;
 }

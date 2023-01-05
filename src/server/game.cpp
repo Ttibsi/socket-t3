@@ -116,9 +116,10 @@ State has_game_ended(board_t board) {
 void game_end(bool win, int clientSocket) {
     std::cout << "Game over. Player " << ((win) ? "won" : "lost") << "\n";
 
-    std::string end_tag = "Game over, you ";
-    end_tag.append((win) ? "win" : "lose");
-    end_tag.append(". Thanks for playing.\n");
+    std::string end_tag = ((win) ? "\e[1;34m" : "\e[1;31m") +
+                          std::string("Game over, you ") +
+                          std::string((win) ? "win" : "lose") +
+                          std::string(". Thanks for playing.\e[0m\n");
 
     sent_to_client(clientSocket, end_tag);
 }
