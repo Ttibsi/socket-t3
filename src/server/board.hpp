@@ -45,7 +45,7 @@ inline std::string print_board(board_t b) {
 }
 
 inline bool check_value(std::string in) {
-    std::regex exp(R"((\(?)([0-2]),(\ ?)([0-2])(\)?))");
+    std::regex exp(R"((\(?)([0-2])(,|\ )+([0-2])(\)?))");
     if (regex_match(in, exp))
         return true;
     return false;
