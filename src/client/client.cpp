@@ -54,8 +54,13 @@ int client_main() {
         memset(buf, 0, 4096);
         int bytesReceived = recv(sock, buf, 4096, 0);
 
+        if (bytesReceived == 0) {
+            break;
+        }
+
         // Display Result
         std::cout << std::string(buf, bytesReceived) << "\n";
+
     } while (true);
 
     // Close socket
