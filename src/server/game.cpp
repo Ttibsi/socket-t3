@@ -8,6 +8,7 @@
 #include "token.hpp"
 
 enum class State { Win, Lose, No_state };
+int move_counter;
 
 board_t start_game(int clientSocket) {
     std::vector<std::string> intro = {
@@ -115,8 +116,8 @@ State has_game_ended(board_t board) {
 void game_end(bool win, int clientSocket) {
     std::cout << "Game over. Player " << ((win) ? "won" : "lost") << "\n";
 
-    std::string end_tag = "Game over, you have ";
-    end_tag.append((win) ? "won" : "lost");
+    std::string end_tag = "Game over, you ";
+    end_tag.append((win) ? "win" : "lose");
     end_tag.append(". Thanks for playing.\n");
 
     sent_to_client(clientSocket, end_tag);
@@ -125,18 +126,23 @@ void game_end(bool win, int clientSocket) {
 std::tuple<bool, board_t> play_game(board_t board, int clientSocket,
                                     int bytesRecv, char *buf) {
     auto [b, success] = place_counter(board, std::string(buf, 0, bytesRecv));
+
     if (success) {
-        board = ai_player(b);
+        move_counter += 1;
+        board = (move_counter < 5) ? ai_player(b) : b;
     } else {
         std::cout << "Not successful\n";
         sent_to_client(clientSocket, std::string("Invalid location\n"));
+        board = b;
     }
+
     sent_to_client(clientSocket, print_board(board));
 
-    if (has_game_ended(board) == State::Win) {
+    State end_state = has_game_ended(board);
+    if (end_state == State::Win) {
         game_end(true, clientSocket);
         return std::tuple{true, board};
-    } else if (has_game_ended(board) == State::Lose) {
+    } else if (end_state == State::Lose) {
         game_end(false, clientSocket);
         return std::tuple{true, board};
     }

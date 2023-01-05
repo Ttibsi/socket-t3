@@ -4,7 +4,7 @@ tic tac toe using sockets
 ### HOW TO RUN
 Prerequisites: `Docker`, `Make`
 
-To play, you need to create the environment to run this program. On your first 
+To play, you need to create the environment to run this program. On your first
 execution, run:
 
 ```bash
@@ -28,5 +28,4 @@ In another terminal window, access the same environment with `make env` and run
 ```
 
 To play, just enter the co-ordinates of the box you want to fill. The game will
-accept input in the following formats: `(0,1)`, `0,1`, `0, 1`, `0 1` 
-
+accept input in the following formats: `(0,1)`, `0,1`, `0, 1`, `0 1`
