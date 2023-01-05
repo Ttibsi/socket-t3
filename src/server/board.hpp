@@ -52,13 +52,14 @@ inline std::vector<std::string> format_text(board_t board) {
 }
 
 inline std::string print_board(board_t board) {
-    std::vector<std::string> b = format_text(board);
+    std::vector<std::string> output = format_text(board);
 
-    std::string ret = std::string("=============\n") + "| " + b[0] + " | " +
-                      b[1] + " | " + b[2] + " |\n" + "=============\n" + "| " +
-                      b[3] + " | " + b[4] + " | " + b[5] + " |\n" +
-                      "=============\n" + "| " + b[6] + " | " + b[7] + " | " +
-                      b[8] + " |\n" + "=============\n";
+    std::string ret = std::string("=============\n") + "| " + output[0] +
+                      " | " + output[1] + " | " + output[2] + " |\n" +
+                      "=============\n" + "| " + output[3] + " | " + output[4] +
+                      " | " + output[5] + " |\n" + "=============\n" + "| " +
+                      output[6] + " | " + output[7] + " | " + output[8] +
+                      " |\n" + "=============\n";
 
     return ret;
 }
